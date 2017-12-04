@@ -1,0 +1,2 @@
+﻿  main.cpp
+c:\atc\projeto pipi\projetoatc1\main.cpp(5): fatal error C1083: Não é possível abrir arquivo incluir: 'SDL.h': No such file or directory
