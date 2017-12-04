@@ -937,6 +937,7 @@ void verifica_acidente(struct carro *car, struct carro *car1, SDL_Texture *gacid
 	}// teste exemplo
 	//ollaaaaaaaaaza
 	//teste 2
+
 	//oi
 }
 
