@@ -935,7 +935,10 @@ void verifica_acidente(struct carro *car, struct carro *car1, SDL_Texture *gacid
 		(*car1).velocidadeY = 0;
 
 	}// teste exemplo
+	//puika
+	//teste 2
+
+	//oi
 }
-//aqui ta mal
-//cosasdfgh
+
 
