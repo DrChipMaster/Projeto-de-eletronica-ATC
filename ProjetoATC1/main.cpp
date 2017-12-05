@@ -941,5 +941,5 @@ void verifica_acidente(struct carro *car, struct carro *car1, SDL_Texture *gacid
 	//oi
 }
 
-//cu
+//pedro
 
