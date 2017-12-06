@@ -66,6 +66,7 @@ struct timer
 	int tempo_atual;
 	int temporizador;
 };
+
 typedef enum {
 	FALSE,
 	TRUE
@@ -90,7 +91,10 @@ void semaforo_mecanica(struct timer *temp, struct semaforo *semaf, int *contador
 int verifica_distancia(struct carro car, struct semaforo sem);
 void pos_semaforo(struct semaforo *sem, int x, int y, int num);
 void para_carro(struct carro *car);
+void carro_semaforo_arranca(struct carro *car, struct semaforo *sem);
 bool_t para_carro_semaforo(struct carro *car, struct semaforo *sem);
+bool_t para_carro_amarelo(struct carro *car, struct semaforo *sem);
+bool_t para_carro_vermelho(struct carro *car, struct semaforo *sem);
 bool_t car_matriz(struct carro car, struct carro car1);
 void local_acidente(struct carro car, SDL_Texture *gacidente);
 void verifica_acidente(struct carro *car, struct carro *car1,SDL_Texture *gacidente);
@@ -155,12 +159,7 @@ SDL_Texture* loadTexture(const char *path)
 
 
 int loadMedia(){
-	// load splash image
-	/*gXOut = SDL_LoadBMP("assets/road.bmp");
-	if (gXOut == NULL) {
-		printf("Unable to load image. SDL Error: %s\n", SDL_GetError());
-		return 0;
-	}*/
+	
 	gXOut = loadTexture("assets/road.png");
 	if (gXOut== NULL) {
 		printf("Failed to load texture image assets/road.png !\n");
@@ -374,7 +373,7 @@ int main(int argc, char* args[])
 				coloca_semaforo(sem1,  1);
 				coloca_semaforo(sem2,  1);
 				coloca_semaforo(sem3, 1);
-				if (para_carro_semaforo(&taxi,&sem2))
+ 				if (para_carro_semaforo(&taxi,&sem2))
 				{
 					para_carro(&taxi);
 				}
@@ -390,6 +389,11 @@ int main(int argc, char* args[])
 				{
 					para_carro(&bombeiros);
 				}
+
+				carro_semaforo_arranca(&taxi, &sem2);
+				carro_semaforo_arranca(&camiao, &sem3);
+				carro_semaforo_arranca(&popo1, &sem1);
+				carro_semaforo_arranca(&bombeiros, &sem);
 				
 
 
@@ -516,44 +520,30 @@ void update_speed(struct carro *car)
 	int i;
 	int j;
 	for (i = 0; i < VETOR; i++)
-		for (j = 0; j < VETOR; j++)
-		{
-			if (map[i][j] == (*car).numero && (i > VETOR - max_vel || j > VETOR - max_vel) && ((*car).velocidadeX>0 || (*car).velocidadeY>0))
-			{
-
-				if ((*car).velocidadeX == 0)
-				{
-					(*car).velocidadeY = velRand();
-					return;
+		for (j = 0; j < VETOR; j++){
+			if (map[i][j] == (*car).numero && (i > VETOR - max_vel || j > VETOR - max_vel) && ((*car).velocidadeX>0 || (*car).velocidadeY>0)){
+				if ((*car).velocidadeX == 0){
+						(*car).velocidadeY = velRand();
+						return;
 				}
-				if ((*car).velocidadeY == 0)
-
-				{
-					(*car).velocidadeX = velRand();
-					return;
-
-				}
-
-			}if (map[i][j] == (*car).numero && (i < max_vel || j < max_vel) && ((*car).velocidadeX < 0 || (*car).velocidadeY < 0))
-			{
-				if ((*car).velocidadeX == 0)
-				{
-					(*car).velocidadeY = -velRand();
-					return;
-				}
-				else
-				{
-					(*car).velocidadeX = -velRand();
-					return;
-
+				if ((*car).velocidadeY == 0){
+						(*car).velocidadeX = velRand();
+						return;
 				}
 			}
-			if (map[i][j] == (*car).numero && (i < max_vel || j < max_vel) && ((*car).velocidadeX < 0 && (*car).velocidadeY == 0))
-			{
-				
+			if (map[i][j] == (*car).numero && (i < max_vel || j < max_vel) && ((*car).velocidadeX < 0 || (*car).velocidadeY < 0)){
+				if ((*car).velocidadeX == 0){
+						(*car).velocidadeY = -velRand();
+						return;
+				}
+				else{
 					(*car).velocidadeX = -velRand();
 					return;
-
+				}
+			}
+			if (map[i][j] == (*car).numero && (i < max_vel || j < max_vel) && ((*car).velocidadeX < 0 && (*car).velocidadeY == 0)){
+				(*car).velocidadeX = -velRand();
+				return;
 			}
 		}
 
@@ -759,12 +749,28 @@ void para_carro(struct carro *car)
 
 bool_t para_carro_semaforo(struct carro *car, struct semaforo *sem)
 {
-	int a = verifica_distancia(*car, *sem);
-	if (verifica_distancia(*car, *sem) < 150 && verifica_distancia(*car, *sem) > 50 && (*sem).amarelo == 1 && (*car).velocidadeY==0)
+
+	if (para_carro_vermelho(car, sem)) 
+		return TRUE;
+
+	if (para_carro_amarelo(car, sem))
+		return TRUE;
+
+	if (verifica_distancia(*car, *sem) == -1)
 	{
-		if((*car).velocidadeX>3)
-		(*car).velocidadeX = (*car).velocidadeX-1;
-		if ((*car).velocidadeX<0 &&car->velocidadeX<-3)
+		return FALSE;
+	}
+	else return FALSE;
+}
+
+
+bool_t para_carro_amarelo(struct carro *car, struct semaforo *sem)
+{
+	if (verifica_distancia(*car, *sem) < 150 && verifica_distancia(*car, *sem) > 50 && (*sem).amarelo == 1 && (*car).velocidadeY == 0)
+	{
+		if ((*car).velocidadeX>3)
+			(*car).velocidadeX = (*car).velocidadeX - 1;
+		if ((*car).velocidadeX<0 && car->velocidadeX<-3)
 			(*car).velocidadeX = (*car).velocidadeX + 1;
 		return FALSE;
 	}
@@ -776,9 +782,31 @@ bool_t para_carro_semaforo(struct carro *car, struct semaforo *sem)
 			return TRUE;
 		return FALSE;
 	}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	if (verifica_distancia(*car, *sem) <150  && verifica_distancia(*car, *sem) > 50 && (*sem).vermelho == 1 && (*car).velocidadeY == 0)
+	if (verifica_distancia(*car, *sem) < 150 && verifica_distancia(*car, *sem) > 50 && (*sem).amarelo == 1 && (*car).velocidadeX == 0)
+	{
+		if ((*car).velocidadeY > 3)
+			(*car).velocidadeY = ((*car).velocidadeY) - 1;
+		if ((*car).velocidadeY < 0 && car->velocidadeY < -3)
+			(*car).velocidadeY = ((*car).velocidadeY) + 1;
+		return FALSE;
+	}
+
+	if (verifica_distancia(*car, *sem) < 6 && verifica_distancia(*car, *sem) > -1 && (*sem).amarelo == 1 && (*car).velocidadeX == 0)
+	{
+		if ((*car).velocidadeY <= 3 && car->velocidadeY > 0)
+			return TRUE;
+		if ((*car).velocidadeY < 0 && car->velocidadeY > -3)
+			return TRUE;
+		return FALSE;
+	}
+	else return FALSE;
+}
+
+bool_t para_carro_vermelho(struct carro *car, struct semaforo *sem)
+{
+
+	if (verifica_distancia(*car, *sem) <150 && verifica_distancia(*car, *sem) > 50 && (*sem).vermelho == 1 && (*car).velocidadeY == 0)
 	{
 		if ((*car).velocidadeX>3)
 			(*car).velocidadeX = (*car).velocidadeX - 1;
@@ -796,78 +824,54 @@ bool_t para_carro_semaforo(struct carro *car, struct semaforo *sem)
 			return TRUE;
 		return FALSE;
 	}
-	
-	if (verifica_distancia(*car, *sem) == -1)
-	{
-		return FALSE;
-	}
-
-	if (verifica_distancia(*car, *sem) < 150 && verifica_distancia(*car, *sem) > 50 && (*sem).amarelo == 1 && (*car).velocidadeX == 0)
-	{
-		if ((*car).velocidadeY > 3)
-		(*car).velocidadeY = ((*car).velocidadeY) - 1;
-		if ((*car).velocidadeY < 0 && car->velocidadeY < -3)
-			(*car).velocidadeY = ((*car).velocidadeY) + 1;
-		return FALSE;
-	}
-
-	if (verifica_distancia(*car, *sem) < 6 && verifica_distancia(*car, *sem) > -1 && (*sem).amarelo == 1 && (*car).velocidadeX == 0)
-	{
-		if ((*car).velocidadeY <= 3 && car->velocidadeY > 0)
-		return TRUE;
-		if ((*car).velocidadeY < 0 && car->velocidadeY > -3)
-			return TRUE;
-		return FALSE;
-	}
 
 	if (verifica_distancia(*car, *sem) < 150 && verifica_distancia(*car, *sem) > 50 && (*sem).vermelho == 1 && (*car).velocidadeX == 0)
 	{
 		if ((*car).velocidadeY > 3)
-		(*car).velocidadeY = ((*car).velocidadeY) - 1;
+			(*car).velocidadeY = ((*car).velocidadeY) - 1;
 		if ((*car).velocidadeY < 0 && car->velocidadeY < -3)
 			(*car).velocidadeY = ((*car).velocidadeY) + 1;
 		return FALSE;
 	}
+
 	if (verifica_distancia(*car, *sem) < 6 && verifica_distancia(*car, *sem) > -1 && (*sem).vermelho == 1 && (*car).velocidadeX == 0)
 	{
 		if ((*car).velocidadeY <= 5 && car->velocidadeY >0)
-		return TRUE;
+			return TRUE;
 		if ((*car).velocidadeY < 0 && car->velocidadeY > -5)
 			return TRUE;
 		return FALSE;
 	}
+	else return FALSE;
+
+}
 
 
-	///////////
-
-	if ((*sem).verde == 1 && (*car).aux==2 &&(*car).velocidadeX==0 && (*car).velocidadeY == 0 )
-	{
-		car->velocidadeX = vel_pos_acidente;
-		car->aux = 0;
-		return FALSE;
-	}
-	if ((*sem).verde == 1 && (*car).aux == 1 && (*car).velocidadeX == 0 && (*car).velocidadeY == 0)
+void carro_semaforo_arranca(struct carro *car, struct semaforo *sem)
+{if ((*sem).verde == 1 && (*car).aux == 1 && (*car).velocidadeX == 0 && (*car).velocidadeY == 0)
 	{
 		car->velocidadeX = -vel_pos_acidente;
 		car->aux = 0;
-		return FALSE;
+	}
+	if ((*sem).verde == 1 && (*car).aux == 2 && (*car).velocidadeX == 0 && (*car).velocidadeY == 0)
+	{
+		car->velocidadeX = vel_pos_acidente;
+		car->aux = 0;
 	}
 	
+
 	if ((*sem).verde == 1 && (*car).aux == 3 && (*car).velocidadeX == 0 && (*car).velocidadeY == 0)
 	{
 		car->velocidadeY = vel_pos_acidente;
 		car->aux = 0;
-		return FALSE;
 	}
-	if ((*sem).verde == 1 && (*car).aux == 4 && (*car).velocidadeX == 0 && (*car).velocidadeY == 0)
+	if ((*sem).verde == 1 && (*car).aux == 4&& (*car).velocidadeX == 0 && (*car).velocidadeY == 0)
 	{
 		car->velocidadeY = -vel_pos_acidente;
 		car->aux = 0;
-		return FALSE;
 	}
-
-	else return FALSE;
 }
+
 bool_t car_matriz(struct carro car, struct carro car1)
 {
 
