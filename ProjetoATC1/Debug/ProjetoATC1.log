@@ -1,3 +1,11 @@
 ﻿  main.cpp
+c:\users\hp\desktop\atc\semaforo\projetoatc1\main.cpp(263): warning C4100: 'args': parâmetro formal não referenciado
+c:\users\hp\desktop\atc\semaforo\projetoatc1\main.cpp(263): warning C4100: 'argc': parâmetro formal não referenciado
+c:\users\hp\desktop\atc\semaforo\projetoatc1\main.cpp(487): warning C4459: a declaração de 'gCar' oculta uma declaração global
+  c:\users\hp\desktop\atc\semaforo\projetoatc1\main.cpp(26): note: consulte a declaração de 'gCar'
+c:\users\hp\desktop\atc\semaforo\projetoatc1\main.cpp(911): warning C4459: a declaração de 'gacidente' oculta uma declaração global
+  c:\users\hp\desktop\atc\semaforo\projetoatc1\main.cpp(34): note: consulte a declaração de 'gacidente'
+c:\users\hp\desktop\atc\semaforo\projetoatc1\main.cpp(930): warning C4459: a declaração de 'gacidente' oculta uma declaração global
+  c:\users\hp\desktop\atc\semaforo\projetoatc1\main.cpp(34): note: consulte a declaração de 'gacidente'
   ProjetoATC1.vcxproj -> C:\Users\hp\Desktop\ATC\Semaforo\Debug\ProjetoATC1.exe
   ProjetoATC1.vcxproj -> C:\Users\hp\Desktop\ATC\Semaforo\Debug\ProjetoATC1.pdb (Partial PDB)
