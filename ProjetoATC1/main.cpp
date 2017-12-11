@@ -1,6 +1,7 @@
 
+#ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
-
+#endif
 #include <stdio.h>
 #include <SDL.h>
 #include <time.h>
@@ -275,8 +276,8 @@ int main(int argc, char* args[])
 
 
 				// apply the image
-				SDL_RenderClear(gRenderer);
-				SDL_RenderCopy(gRenderer, estrada.gCarro, NULL, NULL);
+				SDL_RenderClear(gRenderer2);
+				SDL_RenderCopy(gRenderer2, estrada.gCarro, NULL, NULL);
 
 
 
@@ -725,7 +726,7 @@ void para_carro(carro_t *carro)
 
 bool_t para_carro_semaforo(carro_t *carro, semaforo_t *sem)
 {
-	int a = verifica_distancia(*carro, *sem);
+	
 	if (verifica_distancia(*carro, *sem) < 150 && verifica_distancia(*carro, *sem) > 50 && (*sem).amarelo == 1 && carro->velocidadeY==0)
 	{
 		if(carro->velocidadeX>3)
