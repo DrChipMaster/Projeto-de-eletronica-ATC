@@ -1,5 +1,11 @@
 ﻿  main.cpp
-  LINK : C:\Atc\Projeto pipi\Debug\ProjetoATC1.exe não encontrado ou não compilado pelo o último link incremental; executando link completo
+c:\atc\projeto pipi\projetoatc1\main.cpp(97): warning C4100: 'gRenderer': parâmetro formal não referenciado
+c:\atc\projeto pipi\projetoatc1\main.cpp(130): warning C4100: 'gRenderer': parâmetro formal não referenciado
+c:\atc\projeto pipi\projetoatc1\main.cpp(202): warning C4100: 'args': parâmetro formal não referenciado
+c:\atc\projeto pipi\projetoatc1\main.cpp(202): warning C4100: 'argc': parâmetro formal não referenciado
+c:\atc\projeto pipi\projetoatc1\main.cpp(450): warning C4100: 'gRenderer': parâmetro formal não referenciado
+c:\atc\projeto pipi\projetoatc1\main.cpp(528): warning C4100: 'gRenderer': parâmetro formal não referenciado
+c:\atc\projeto pipi\projetoatc1\main.cpp(874): warning C4100: 'gRenderer': parâmetro formal não referenciado
      Criando biblioteca C:\Atc\Projeto pipi\Debug\ProjetoATC1.lib e objeto C:\Atc\Projeto pipi\Debug\ProjetoATC1.exp
   ProjetoATC1.vcxproj -> C:\Atc\Projeto pipi\Debug\ProjetoATC1.exe
   ProjetoATC1.vcxproj -> C:\Atc\Projeto pipi\Debug\ProjetoATC1.pdb (Partial PDB)
