@@ -85,6 +85,9 @@ int verifica_distancia(carro_t carro,semaforo_t sem);
 void pos_semaforo(semaforo_t *sem, int x, int y, int num);
 void para_carro(carro_t *carro);
 bool_t para_carro_semaforo(carro_t *carro,semaforo_t *sem);
+bool_t para_carro_amarelo(carro_t *carro, semaforo_t *sem);
+bool_t para_carro_vermelho(carro_t *carro, semaforo_t *sem);
+void carro_semaforo_arranca(carro_t *car, semaforo_t *sem);
 bool_t car_matriz(carro_t carro, carro_t carro1);
 void local_acidente(carro_t carro, SDL_Texture *gacidente, SDL_Renderer *gRenderer);
 void verifica_acidente(carro_t *carro, carro_t *carro1 ,SDL_Texture *gacidente, SDL_Renderer *gRenderer);
@@ -354,6 +357,12 @@ int main(int argc, char* args[])
 				{
 					para_carro(&bombeiros);
 				}
+
+				carro_semaforo_arranca(&taxi, &sem2);
+				carro_semaforo_arranca(&camiao, &sem3);
+				carro_semaforo_arranca(&carro1, &sem1);
+				carro_semaforo_arranca(&bombeiros, &sem);
+
 				
 
 
@@ -723,118 +732,132 @@ void para_carro(carro_t *carro)
 	}
 
 }
-
 bool_t para_carro_semaforo(carro_t *carro, semaforo_t *sem)
 {
-	
-	if (verifica_distancia(*carro, *sem) < 150 && verifica_distancia(*carro, *sem) > 50 && (*sem).amarelo == 1 && carro->velocidadeY==0)
-	{
-		if(carro->velocidadeX>3)
-		carro->velocidadeX = carro->velocidadeX-1;
-		if (carro->velocidadeX<0 &&carro->velocidadeX<-3)
-			carro->velocidadeX = carro->velocidadeX + 1;
-		return FALSE;
-	}
-	if (verifica_distancia(*carro, *sem) < 6 && verifica_distancia(*carro, *sem) > -1 && (*sem).amarelo == 1 && (*carro).velocidadeY == 0)
-	{
-		if (carro->velocidadeX <= 3 && carro->velocidadeX>0)
-			return FALSE;
-		if (carro->velocidadeX<0 && carro->velocidadeX>-3)
-			return TRUE;
-		return FALSE;
-	}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	if (verifica_distancia(*carro, *sem) <150  && verifica_distancia(*carro, *sem) > 50 && (*sem).vermelho == 1 && (*carro).velocidadeY == 0)
-	{
-		if (carro->velocidadeX>3)
-			carro->velocidadeX = carro->velocidadeX - 1;
+	if (para_carro_vermelho(carro, sem))
+		return TRUE;
 
+	if (para_carro_amarelo(carro, sem))
+		return TRUE;
 
-		if (carro->velocidadeX<0 && carro->velocidadeX<-3)
-			carro->velocidadeX = carro->velocidadeX + 1;
-		return FALSE;
-	}
-	if (verifica_distancia(*carro, *sem) < 5 && verifica_distancia(*carro, *sem) > -1 && (*sem).vermelho == 1 && carro->velocidadeY == 0)
-	{
-		if (carro->velocidadeX <= 5 && carro->velocidadeX>0)
-			return TRUE;
-		if (carro->velocidadeX<0 && carro->velocidadeX>-5)
-			return TRUE;
-		return FALSE;
-	}
-	
 	if (verifica_distancia(*carro, *sem) == -1)
 	{
 		return FALSE;
 	}
+	else return FALSE;
+}
 
-	if (verifica_distancia(*carro, *sem) < 150 && verifica_distancia(*carro, *sem) > 50 && (*sem).amarelo == 1 && carro->velocidadeX == 0)
+
+bool_t para_carro_amarelo(carro_t *carro, semaforo_t *sem)
+{
+	if (verifica_distancia(*carro, *sem) < 150 && verifica_distancia(*carro, *sem) > 50 && (*sem).amarelo == 1 && (*carro).velocidadeY == 0)
 	{
-		if (carro->velocidadeY > 3)
-		carro->velocidadeY = (carro->velocidadeY) - 1;
-		if (carro->velocidadeY < 0 && carro->velocidadeY < -3)
-			carro->velocidadeY = (carro->velocidadeY) + 1;
+		if ((*carro).velocidadeX>3)
+			(*carro).velocidadeX = (*carro).velocidadeX - 1;
+		if ((*carro).velocidadeX<0 && carro->velocidadeX<-3)
+			(*carro).velocidadeX = (*carro).velocidadeX + 1;
 		return FALSE;
 	}
-
-	if (verifica_distancia(*carro, *sem) < 6 && verifica_distancia(*carro, *sem) > -1 && (*sem).amarelo == 1 && carro->velocidadeX == 0)
+	if (verifica_distancia(*carro, *sem) < 6 && verifica_distancia(*carro, *sem) > -1 && (*sem).amarelo == 1 && (*carro).velocidadeY == 0)
 	{
-		if (carro->velocidadeY <= 3 && carro->velocidadeY > 0)
-		return TRUE;
-		if (carro->velocidadeY < 0 && carro->velocidadeY > -3)
+		if ((*carro).velocidadeX <= 3 && carro->velocidadeX>0)
+			return FALSE;
+		if ((*carro).velocidadeX<0 && carro->velocidadeX>-3)
 			return TRUE;
 		return FALSE;
 	}
 
-	if (verifica_distancia(*carro, *sem) < 150 && verifica_distancia(*carro, *sem) > 50 && (*sem).vermelho == 1 && carro->velocidadeX == 0)
+	if (verifica_distancia(*carro, *sem) < 150 && verifica_distancia(*carro, *sem) > 50 && (*sem).amarelo == 1 && (*carro).velocidadeX == 0)
 	{
-		if (carro->velocidadeY > 3)
-		carro->velocidadeY = (carro->velocidadeY) - 1;
-		if (carro->velocidadeY < 0 && carro->velocidadeY < -3)
-			carro->velocidadeY = (carro->velocidadeY) + 1;
+		if ((*carro).velocidadeY > 3)
+			(*carro).velocidadeY = ((*carro).velocidadeY) - 1;
+		if ((*carro).velocidadeY < 0 && carro->velocidadeY < -3)
+			(*carro).velocidadeY = ((*carro).velocidadeY) + 1;
 		return FALSE;
 	}
-	if (verifica_distancia(*carro, *sem) < 6 && verifica_distancia(*carro, *sem) > -1 && (*sem).vermelho == 1 && carro->velocidadeX == 0)
+
+	if (verifica_distancia(*carro, *sem) < 6 && verifica_distancia(*carro, *sem) > -1 && (*sem).amarelo == 1 && (*carro).velocidadeX == 0)
 	{
-		if (carro->velocidadeY <= 5 && carro->velocidadeY >0)
-		return TRUE;
-		if (carro->velocidadeY < 0 && carro->velocidadeY > -5)
+		if ((*carro).velocidadeY <= 3 && carro->velocidadeY > 0)
+			return TRUE;
+		if ((*carro).velocidadeY < 0 && carro->velocidadeY > -3)
+			return TRUE;
+		return FALSE;
+	}
+	else return FALSE;
+}
+
+bool_t para_carro_vermelho(carro_t *carro, semaforo_t *sem)
+{
+
+	if (verifica_distancia(*carro, *sem) <150 && verifica_distancia(*carro, *sem) > 50 && (*sem).vermelho == 1 && (*carro).velocidadeY == 0)
+	{
+		if ((*carro).velocidadeX>3)
+			(*carro).velocidadeX = (*carro).velocidadeX - 1;
+
+
+		if ((*carro).velocidadeX<0 && carro->velocidadeX<-3)
+			(*carro).velocidadeX = (*carro).velocidadeX + 1;
+		return FALSE;
+	}
+	if (verifica_distancia(*carro, *sem) < 5 && verifica_distancia(*carro, *sem) > -1 && (*sem).vermelho == 1 && (*carro).velocidadeY == 0)
+	{
+		if ((*carro).velocidadeX <= 5 && carro->velocidadeX>0)
+			return TRUE;
+		if ((*carro).velocidadeX<0 && carro->velocidadeX>-5)
 			return TRUE;
 		return FALSE;
 	}
 
-
-	///////////
-
-	if ((*sem).verde == 1 && carro->aux==2 &&carro->velocidadeX==0 && carro->velocidadeY == 0 )
+	if (verifica_distancia(*carro, *sem) < 150 && verifica_distancia(*carro, *sem) > 50 && (*sem).vermelho == 1 && (*carro).velocidadeX == 0)
 	{
-		carro->velocidadeX = vel_pos_acidente;
-		carro->aux = 0;
+		if ((*carro).velocidadeY > 3)
+			(*carro).velocidadeY = ((*carro).velocidadeY) - 1;
+		if ((*carro).velocidadeY < 0 && carro->velocidadeY < -3)
+			(*carro).velocidadeY = ((*carro).velocidadeY) + 1;
 		return FALSE;
 	}
-	if ((*sem).verde == 1 && carro->aux == 1 && carro->velocidadeX == 0 && carro->velocidadeY == 0)
+
+	if (verifica_distancia(*carro, *sem) < 6 && verifica_distancia(*carro, *sem) > -1 && (*sem).vermelho == 1 && (*carro).velocidadeX == 0)
+	{
+		if ((*carro).velocidadeY <= 5 && carro->velocidadeY >0)
+			return TRUE;
+		if ((*carro).velocidadeY < 0 && carro->velocidadeY > -5)
+			return TRUE;
+		return FALSE;
+	}
+	else return FALSE;
+
+}
+
+
+void carro_semaforo_arranca(carro_t *carro, semaforo_t *sem)
+{
+	if ((*sem).verde == 1 && (*carro).aux == 1 && (*carro).velocidadeX == 0 && (*carro).velocidadeY == 0)
 	{
 		carro->velocidadeX = -vel_pos_acidente;
 		carro->aux = 0;
-		return FALSE;
 	}
-	
-	if ((*sem).verde == 1 && carro->aux == 3 && carro->velocidadeX == 0 && carro->velocidadeY == 0)
+	if ((*sem).verde == 1 && (*carro).aux == 2 && (*carro).velocidadeX == 0 && (*carro).velocidadeY == 0)
+	{
+		carro->velocidadeX = vel_pos_acidente;
+		carro->aux = 0;
+	}
+
+
+	if ((*sem).verde == 1 && (*carro).aux == 3 && (*carro).velocidadeX == 0 && (*carro).velocidadeY == 0)
 	{
 		carro->velocidadeY = vel_pos_acidente;
 		carro->aux = 0;
-		return FALSE;
 	}
-	if ((*sem).verde == 1 && carro->aux == 4 && carro->velocidadeX == 0 && carro->velocidadeY == 0)
+	if ((*sem).verde == 1 && (*carro).aux == 4 && (*carro).velocidadeX == 0 && (*carro).velocidadeY == 0)
 	{
 		carro->velocidadeY = -vel_pos_acidente;
 		carro->aux = 0;
-		return FALSE;
 	}
-
-	else return FALSE;
 }
+
 bool_t car_matriz(carro_t carro, carro_t carro1)
 {
 
